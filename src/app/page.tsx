@@ -1,1050 +1,527 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import {
-  Map,
-  TreePine,
-  Shield,
-  Building2,
-  GraduationCap,
-  Landmark,
-  Scale,
-  AlertTriangle,
-  TrendingUp,
-  ChevronDown,
-  Waves,
-  Leaf,
-  Eye,
-  ArrowRight,
-  CheckCircle,
-  Hexagon,
-  Circle,
-  Droplets,
+  Map, TreePine, Shield, Building2, GraduationCap, Landmark, Scale,
+  AlertTriangle, ChevronDown, Leaf, Eye, ArrowRight,
+  CheckCircle, Droplets, HelpCircle, TrendingUp, Award
 } from "lucide-react";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import { ZoningMapSimulator } from "@/components/ZoningMapSimulator";
+import { ProtocolSimulator } from "@/components/ProtocolSimulator";
+import { ROICalculator } from "@/components/ROICalculator";
 
-// ========== PARTICLE SYSTEM ==========
-function Particles() {
-  const [particles, setParticles] = useState<Array<{
-    id: number; x: number; y: number; size: number; duration: number; delay: number;
-  }>>([]);
-
-  useEffect(() => {
-    const p = Array.from({ length: 40 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      duration: Math.random() * 20 + 15,
-      delay: Math.random() * 10,
-    }));
-    setParticles(p);
-  }, []);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-teal-400/30"
-          style={{
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: p.size,
-            height: p.size,
-          }}
-          animate={{
-            y: [0, -150, 0],
-            opacity: [0, 0.6, 0],
-            scale: [0.5, 1.2, 0.5],
-          }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            delay: p.delay,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-// ========== MOUSE GLOW EFFECT ==========
-function MouseGlow() {
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handle = (e: MouseEvent) => setMouse({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handle);
-    return () => window.removeEventListener("mousemove", handle);
-  }, []);
-
-  return (
-    <motion.div
-      className="fixed w-[500px] h-[500px] rounded-full pointer-events-none z-50 mix-blend-screen opacity-[0.03]"
-      style={{
-        background: "radial-gradient(circle, #2dd4bf 0%, transparent 70%)",
-        left: mouse.x - 250,
-        top: mouse.y - 250,
-      }}
-      animate={{
-        left: mouse.x - 250,
-        top: mouse.y - 250,
-      }}
-      transition={{ type: "spring", damping: 30, stiffness: 200 }}
-    />
-  );
-}
-
-// ========== FLOATING ELEMENT ==========
-function FloatingElement({ children, delay = 0, duration = 6 }: any) {
-  return (
-    <motion.div
-      animate={{ y: [0, -20, 0], rotate: [0, 1, -1, 0] }}
-      transition={{ duration, repeat: Infinity, delay, ease: "easeInOut" }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// ========== DATA ==========
+// ========== DATA FOR THE 7 PILLARS ==========
 const pillars = [
-  {
-    icon: Map,
-    title: "Zonificación Ecológica Obligatoria",
-    desc: "Mapeo con drones térmicos, GIS y sensores para separar zonas rojas (fauna exclusiva), amarillas (acceso restringido) y verdes (convivencia controlada).",
-    accent: "#f87171",
-    bg: "from-red-500/10 to-orange-500/5",
-    border: "border-red-500/20 hover:border-red-400/40",
-  },
-  {
-    icon: TreePine,
-    title: "Corredores Biológicos Artificiales",
-    desc: "Canales ecológicos, pasos hidráulicos, lagunas conectadas y túneles biológicos que permiten movimiento, caza y reproducción sin cruzar zonas urbanas.",
-    accent: "#34d399",
-    bg: "from-green-500/10 to-emerald-500/5",
-    border: "border-green-500/20 hover:border-green-400/40",
-  },
-  {
-    icon: Shield,
-    title: "Reubicación Inteligente",
-    desc: "Clasificación por edad, sexo y comportamiento. Solo se mueven ejemplares peligrosos, enfermos o atrapados en zonas urbanas irreversibles.",
-    accent: "#60a5fa",
-    bg: "from-blue-500/10 to-cyan-500/5",
-    border: "border-blue-500/20 hover:border-blue-400/40",
-  },
-  {
-    icon: Building2,
-    title: "Obligaciones Turísticas",
-    desc: "Porcentaje mínimo de humedal conservado, barreras ecológicas, iluminación amigable e impuesto de compensación ecológica.",
-    accent: "#fbbf24",
-    bg: "from-amber-500/10 to-yellow-500/5",
-    border: "border-amber-500/20 hover:border-amber-400/40",
-  },
-  {
-    icon: GraduationCap,
-    title: "Educación Pública y Protocolos",
-    desc: "Señalética obligatoria, QR educativos, simulacros, capacitación hotelera y certificación 'Zona de coexistencia responsable'.",
-    accent: "#a78bfa",
-    bg: "from-purple-500/10 to-violet-500/5",
-    border: "border-purple-500/20 hover:border-purple-400/40",
-  },
-  {
-    icon: Landmark,
-    title: "Santuario + Ecoturismo Controlado",
-    desc: "Centro Integral de Conservación con rescate, investigación, incubación y ecoturismo: recorridos seguros, observación nocturna y tours científicos.",
-    accent: "#2dd4bf",
-    bg: "from-teal-500/10 to-cyan-500/5",
-    border: "border-teal-500/20 hover:border-teal-400/40",
-  },
-  {
-    icon: Scale,
-    title: "Marco Legal y Presión Institucional",
-    desc: "Área Natural Protegida, Sitio Ramsar, corredor biológico estatal, auditorías ambientales y revisión de MIAs con análisis de impacto acumulativo.",
-    accent: "#818cf8",
-    bg: "from-indigo-500/10 to-blue-500/5",
-    border: "border-indigo-500/20 hover:border-indigo-400/40",
-  },
+  { icon: Map, title: "Zonificación Ecológica", desc: "Mapeo de precisión con drones térmicos, GIS y sensores físicos para delimitar zonas rojas (conservación), amarillas (amortiguamiento) y verdes (desarrollo urbano).", color: "#34d399" },
+  { icon: TreePine, title: "Corredores Biológicos", desc: "Canales fluviales y lagunas interconectadas mediante pasos de fauna y bio-túneles bajo calles, facilitando el libre movimiento sin cruzar áreas habitadas.", color: "#10b981" },
+  { icon: Shield, title: "Reubicación Inteligente", desc: "Monitoreo y clasificación rigurosa por edad y comportamiento. Captura y reubicación únicamente de ejemplares catalogados como de alto riesgo.", color: "#22d3ee" },
+  { icon: Building2, title: "Obligaciones Turísticas", desc: "Porcentaje mínimo obligatorio de humedal conservado por cada desarrollo, barreras físicas discretas anti-contacto y compensaciones ecológicas directas.", color: "#fbbf24" },
+  { icon: GraduationCap, title: "Educación Pública", desc: "Señalética técnica de advertencia, códigos QR educativos integrados, capacitación obligatoria al personal hotelero y simulacros comunitarios.", color: "#a78bfa" },
+  { icon: Landmark, title: "Santuario y Ecoturismo", desc: "Creación de un Centro Integral de Investigación, rescate, incubación científica y ecoturismo altamente controlado en la zona núcleo.", color: "#06b6d4" },
+  { icon: Scale, title: "Marco Legal y Auditoría", desc: "Decreto estatal de Área Natural Protegida, registro Ramsar internacional, auditorías semestrales obligatorias y multas severas por rellenos ilegales.", color: "#818cf8" },
 ];
 
-const scenarios = [
-  {
-    title: "El gobierno protege al turismo",
-    solution: "Hablar en términos económicos: prevención de ataques, reputación internacional, resiliencia climática y turismo sostenible.",
-    icon: TrendingUp,
-  },
-  {
-    title: "Hay ataques humanos",
-    solution: "Protocolo de emergencia, captura selectiva, investigación forense ambiental y análisis de las causas raíz.",
-    icon: Shield,
-  },
-  {
-    title: "Desarrolladores presionan políticamente",
-    solution: "Aliarse con universidades, biólogos, ONGs, evidencia científica, prensa, comunidad local y pescadores.",
-    icon: Scale,
-  },
-  {
-    title: "Ya destruyeron gran parte del hábitat",
-    solution: "Restauración ecológica progresiva: humedales artificiales, reforestación de manglar, reproducción controlada y recuperación hídrica.",
-    icon: TreePine,
-  },
-];
-
-const benefits = [
-  {
-    icon: TrendingUp,
-    title: "Valor Inmobiliario",
-    desc: "Las zonas con humedales protegidos tienen mayor valor a largo plazo y menor riesgo de inundaciones.",
-    stat: "+45%",
-    label: "valorización",
-  },
-  {
-    icon: Shield,
-    title: "Seguridad Turística",
-    desc: "Protocolos claros reducen incidentes y mejoran la reputación del destino.",
-    stat: "-80%",
-    label: "incidentes",
-  },
-  {
-    icon: Waves,
-    title: "Resiliencia Climática",
-    desc: "Los humedales previenen inundaciones, filtran agua, estabilizan costas y reducen erosión.",
-    stat: "3x",
-    label: "protección",
-  },
-  {
-    icon: Landmark,
-    title: "Patrimonio Ecológico",
-    desc: "El cocodrilo se convierte en atractivo turístico y fuente de ingresos sostenibles.",
-    stat: "$2.4M",
-    label: "ingresos/año",
-  },
-];
-
-const docItems = [
-  "Diagnóstico del problema",
-  "Evidencia fotográfica/cartográfica",
-  "Impacto ambiental acumulado",
-  "Riesgo humano-fauna",
-  "Plan de mitigación inmediata",
-  "Plan de restauración",
-  "Propuesta legal",
-  "Presupuesto estimado",
-  "Beneficios económicos",
-  "Cronograma por fases",
-];
-
-// ========== MAIN PAGE ==========
 export default function Home() {
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 0.18], [0, -80]);
 
   return (
-    <main ref={containerRef} className="min-h-screen bg-[#080c0e] text-[#e8e6e3] overflow-x-hidden relative">
-      <MouseGlow />
-
-      {/* Scroll Progress */}
+    <main ref={containerRef} className="min-h-screen bg-[#030605] text-stone-100 overflow-x-hidden relative grid-bg">
+      
+      {/* Dynamic Progress Bar at the top */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-400 z-50 origin-left"
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 z-50 origin-left"
         style={{ scaleX: scrollYProgress }}
       />
 
-      {/* ======== HERO CON FOTO REAL ======== */}
-      <motion.section
-        style={{ opacity: heroOpacity, y: heroY }}
+      {/* ======== HERO SECTION: FULLSCREEN HERO WITH MASSIVE EDITORIAL TYPOGRAPHY ======== */}
+      <motion.section 
+        style={{ opacity: heroOpacity, y: heroY }} 
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
       >
-        {/* Background Image */}
+        {/* Fullscreen background photo with dark/green deep solid overlays */}
         <div className="absolute inset-0">
           <img 
             src="/images/croc1.jpg" 
-            alt="Cocodrilo en hábitat"
-            className="w-full h-full object-cover scale-110"
+            alt="Cocodrilo en el manglar" 
+            className="w-full h-full object-cover scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#050a0b]/95 via-[#050a0b]/70 to-[#050a0b]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(13,148,136,0.15)_0%,_transparent_60%)]" />
+          {/* Solid dark green-tinted gradients (NO glassmorphism) */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030605]/95 via-[#030605]/65 to-[#030605]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(16,185,129,0.15)_0%,_transparent_75%)]" />
         </div>
 
-        <Particles />
-
-        {/* Content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center py-20">
-          <Particles />
-          
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+        {/* Content Container */}
+        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center pt-24">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }} 
+            animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.8 }}
           >
-            <span className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-md text-teal-300 text-sm font-medium border border-teal-400/20 shadow-lg shadow-teal-500/10 mb-8"
-            >
-              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-              <span className="uppercase tracking-widest text-xs">Programa Integral Ambiental</span>
+            <span className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#05140f] border border-emerald-500/25 text-emerald-300 text-xs font-bold tracking-[0.25em] uppercase mb-8">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              Programa de Coexistencia Ambiental
             </span>
           </motion.div>
 
-          {/* Title */}
           <motion.h1
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="mt-6 mb-8 leading-[0.95]"
+            transition={{ duration: 1.2, delay: 0.15 }}
+            className="mt-4 mb-8"
           >
-            <span className="block font-display text-5xl md:text-6xl lg:text-7xl font-black tracking-tight"
-            >
-              Recuperación
+            <span className="block font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.85] text-white">
+              RECUPERACIÓN
             </span>
-            <span className="block font-display text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-gradient mt-2"
-            >
-              & Coexistencia
+            <span className="block font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.85] text-gradient mt-3">
+              & COEXISTENCIA
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ duration: 1, delay: 0.5 }} 
+            className="max-w-2xl mx-auto"
           >
-            <p className="text-xl md:text-2xl text-stone-400 leading-relaxed max-w-xl"
-            >
-              Transformando conflictos entre desarrollo humano y fauna silvestre en modelos de{" "}
-              <span className="text-teal-400 font-semibold">coexistencia ecológica</span>, legal y económicamente sostenibles.
+            <p className="text-lg md:text-xl text-stone-400 leading-relaxed font-sans">
+              Transformando conflictos entre el desarrollo turístico y la fauna silvestre en modelos de{" "}
+              <span className="text-emerald-400 font-semibold">preservación ecológica</span>, legal y económicamente sostenibles.
             </p>
           </motion.div>
 
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-10 flex flex-col sm:flex-row gap-4"
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.8 }} 
+            className="mt-14 flex flex-col sm:flex-row gap-5 justify-center"
           >
-            <motion.a
-              href="#pilares"
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(45,212,191,0.3)" }}
-              whileTap={{ scale: 0.95 }}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-teal-400 to-emerald-400 text-[#0a0a0a] font-bold text-lg rounded-2xl transition-all"
-            >
-              Explorar los 7 Pilares
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.a>
-
-            <motion.a
-              href="#contacto"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10 text-white font-semibold text-lg rounded-2xl hover:bg-white/10 hover:border-teal-400/30 transition-all"
-            >
+            <a href="#pilares" className="btn-primary">
+              Explorar Solución <ArrowRight className="w-5 h-5" />
+            </a>
+            <a href="#contacto" className="btn-secondary">
               Presentar Propuesta
-              <ArrowRight className="w-5 h-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-            </motion.a>
+            </a>
           </motion.div>
         </div>
 
-
-
-        {/* Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-md text-teal-300 text-sm font-medium border border-teal-400/20 shadow-lg shadow-teal-500/10"
-            >
-              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-              <span className="uppercase tracking-widest text-xs">Programa Integral Ambiental</span>
-              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-            </span>
-          </motion.div>
-
-          {/* Title */}
-          <motion.h1
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="mt-10 mb-8 leading-[0.95]"
-          >
-            <span className="block font-display text-5xl md:text-7xl lg:text-[7.5rem] font-black tracking-tight"
-            >
-              Recuperación
-            </span>
-            <span className="block font-display text-5xl md:text-7xl lg:text-[7.5rem] font-black tracking-tight text-gradient mt-2"
-            >
-              & Coexistencia
-            </span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="max-w-3xl mx-auto"
-          >
-            <p className="text-xl md:text-2xl text-stone-400 leading-relaxed"
-            >
-              Transformando conflictos entre desarrollo humano y fauna silvestre en modelos de{" "}
-              <span className="text-teal-400 font-semibold">coexistencia ecológica</span>, legal y económicamente sostenibles.
-            </p>
-          </motion.div>
-
-          {/* Divider */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1.2, delay: 0.7 }}
-            className="w-24 h-px bg-gradient-to-r from-transparent via-teal-400 to-transparent mx-auto mt-12"
-          />
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-12 flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <motion.a
-              href="#pilares"
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(45,212,191,0.3)" }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-primary group"
-            >
-              Explorar los 7 Pilares
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.a>
-
-            <motion.a
-              href="#contacto"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-secondary group"
-            >
-              Presentar Propuesta
-              <ArrowRight className="w-5 h-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-            </motion.a>
-          </motion.div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        {/* Scroll down indicator */}
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ delay: 1.4 }} 
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3.5"
         >
-          <span className="text-xs uppercase tracking-[0.3em] text-stone-500">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <div className="w-6 h-10 rounded-full border-2 border-stone-600 flex items-start justify-center p-1"
-            >
-              <motion.div
-                animate={{ y: [0, 16, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="w-1.5 h-3 rounded-full bg-teal-400"
-              />
-            </div>
+          <span className="text-xs uppercase tracking-[0.3em] text-stone-600 font-mono">Deslizar</span>
+          <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity }}>
+            <ChevronDown className="w-5 h-5 text-stone-600" />
           </motion.div>
         </motion.div>
-
-        {/* Bottom Gradient Fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
       </motion.section>
 
-      {/* ======== PROBLEM SECTION ======== */}
-      <section className="relative section-block">
-        <div className="absolute inset-0 grid-bg opacity-30" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-teal-500/5 rounded-full blur-[150px]" />
-
-        <div className="max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-20 items-center"
-          >
-            {/* Image Side */}
-            <motion.div
-              initial={{ opacity: 0, x: 60 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 1 }}
-              className="relative order-1 lg:order-2"
-            >
-              <div className="relative"
+      {/* ======== SECTION 1: EDITORIAL METRICS (NÚMEROS GIGANTES Y DISEÑO EDITORIAL) ======== */}
+      <section className="relative py-32 bg-[#020504] border-y border-emerald-500/10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 divide-y sm:divide-y-0 lg:divide-x divide-emerald-500/10">
+            {[
+              { num: "65%", label: "Pérdida de Humedales", desc: "Reducción histórica del hábitat costero original por rellenos." },
+              { num: "3.2m", label: "Ejemplares Monitoreados", desc: "Talla promedio registrada mediante drones FLIR térmicos." },
+              { num: "-80%", label: "Reducción de Incidentes", desc: "Tasa de mitigación estimada tras aplicar barreras de exclusión." },
+              { num: "100%", label: "Marco Legal Ramsar", desc: "Protección internacional y validación jurídica federal." },
+            ].map((s, i) => (
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 30 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                viewport={{ once: true }} 
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="pt-8 sm:pt-0 lg:pl-8 first:pl-0 first:pt-0"
               >
-                {/* Glow behind image */}
-                <div className="absolute -inset-8 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 rounded-[3rem] blur-3xl" />
+                <span className="block text-6xl md:text-7xl font-black text-gradient font-accent">{s.num}</span>
+                <h4 className="text-sm font-bold uppercase tracking-widest text-emerald-400 mt-4 mb-2 font-mono">{s.label}</h4>
+                <p className="text-xs text-stone-500 leading-relaxed max-w-xs">{s.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-                {/* Image Frame */}
-                <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10"
-                >
-                  <img
-                    src="/images/croc2.jpg"
-                    alt="Manglar"
-                    className="w-full h-[600px] object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-[#0a0a0a]/50" />
+      {/* ======== SECTION 2: EDITORIAL 2-COLUMN PROBLEM (EL PROBLEMA REAL) ======== */}
+      <section className="relative py-40 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative">
+          <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+            
+            {/* Left Column: Text (Editorial layout) */}
+            <div className="lg:col-span-7">
+              <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-mono">
+                <Eye className="w-4 h-4" /> Diagnóstico Crítico
+              </span>
 
-                  {/* Stats Overlay */}
-                  <div className="absolute bottom-8 left-8 right-8"
-                  >
-                    <div className="card-premium"
-                    >
-                      <div className="flex items-center justify-between"
-                      >
-                        <div>
-                          <p className="text-xs uppercase tracking-wider text-stone-500 mb-1">Hábitat Perdido</p>
-                          <p className="text-4xl font-bold text-gradient">65%</p>
-                        </div>
-                        <div className="h-12 w-px bg-white/10" />
-                        <div>
-                          <p className="text-xs uppercase tracking-wider text-stone-500 mb-1">Especies en Riesgo</p>
-                          <p className="text-4xl font-bold text-red-400">3</p>
-                        </div>
-                        <div className="h-12 w-px bg-white/10" />
-                        <div>
-                          <p className="text-xs uppercase tracking-wider text-stone-500 mb-1">Áreas Críticas</p>
-                          <p className="text-4xl font-bold text-amber-400">12</p>
-                        </div>
-                      </div>
+              <h2 className="font-display text-4xl sm:text-6xl font-black mb-10 leading-[1.05] text-white">
+                Los cocodrilos <span className="text-gradient">no invaden</span>: <br />
+                son <span className="text-stone-500 font-normal italic">desplazados</span> de su hábitat.
+              </h2>
 
-                      {/* Progress bar */}
-                      <div className="mt-4"
-                      >
-                        <div className="h-1.5 rounded-full bg-white/10 overflow-hidden"
-                        >
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: "65%" }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.5, delay: 0.5 }}
-                            className="h-full bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full"
-                          />
-                        </div>
-                      </div>
+              <div className="space-y-8 text-stone-400 text-base leading-relaxed max-w-xl">
+                <p className="pl-6 border-l-2 border-emerald-500/30">
+                  Históricamente, la costa poseía un sistema complejo de manglares y canales de marea. El desarrollo inmobiliario acelerado rellenó humedales, interrumpiendo el flujo hídrico y bloqueando las rutas tradicionales de fauna.
+                </p>
+                <p className="pl-6 border-l-2 border-amber-500/30">
+                  Al perder alimento y refugio natural, el cocodrilo americano (Crocodylus acutus) se ve obligado a ingresar en marinas artificiales, lagos de campos de golf y playas, originando encuentros imprevistos con turistas.
+                </p>
+              </div>
+
+              {/* Callout quote - Solid background (NO glassmorphism) */}
+              <div className="mt-12 p-8 rounded-2xl bg-[#09140f] border border-emerald-500/20 max-w-xl">
+                <p className="text-emerald-300 font-semibold text-lg leading-relaxed italic">
+                  &ldquo;No es un comportamiento agresivo, es un desplazamiento ecológico inducido. La solución requiere rediseñar el desarrollo turístico con base en la ciencia.&rdquo;
+                </p>
+                <span className="block mt-4 text-xs font-mono uppercase tracking-wider text-stone-500">
+                  — Comisión Científica de Manejo de Humedales
+                </span>
+              </div>
+            </div>
+
+            {/* Right Column: High Quality Graphic Image with stats (solid overlay) */}
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }} 
+              whileInView={{ opacity: 1, x: 0 }} 
+              viewport={{ once: true }} 
+              transition={{ duration: 1 }} 
+              className="lg:col-span-5 relative"
+            >
+              <div className="relative rounded-3xl overflow-hidden border border-emerald-500/20 shadow-[0_20px_50px_rgba(2,5,4,0.8)]">
+                <img 
+                  src="/images/croc2.jpg" 
+                  alt="Humedales fragmentados por vialidades" 
+                  className="w-full h-[580px] object-cover"
+                />
+                {/* Dark gradient overlay covering the bottom details */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020504] via-transparent to-transparent pointer-events-none" />
+                
+                {/* Stats board inside image - Solid panel (NO glassmorphism) */}
+                <div className="absolute bottom-6 left-6 right-6 p-6 rounded-2xl bg-[#030605] border border-emerald-500/25">
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-stone-500 font-mono">Fraccionamiento</p>
+                      <p className="text-2xl font-black text-emerald-400 font-mono">65%</p>
+                    </div>
+                    <div className="border-x border-stone-800">
+                      <p className="text-[10px] uppercase tracking-wider text-stone-500 font-mono">Zonas Rojas</p>
+                      <p className="text-2xl font-black text-red-400 font-mono">12</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-stone-500 font-mono">Sello Ramsar</p>
+                      <p className="text-2xl font-black text-emerald-400 font-mono">Sitio 32</p>
                     </div>
                   </div>
                 </div>
-
-                {/* Corner Accents */}
-                <div className="absolute -top-4 -left-4 w-20 h-20 border-t-2 border-l-2 border-teal-400/30 rounded-tl-3xl" />
-                <div className="absolute -bottom-4 -right-4 w-20 h-20 border-b-2 border-r-2 border-teal-400/30 rounded-br-3xl" />
               </div>
             </motion.div>
 
-            {/* Text Side */}
-            <div className="order-2 lg:order-1"
-            >
-              <motion.span
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-2 text-teal-400 text-sm font-semibold tracking-[0.2em] uppercase mb-8"
-              >
-                <Eye className="w-4 h-4" />
-                El Problema Real
-              </motion.span>
-
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-10 leading-[1.1]"
-              >
-                Los cocodrilos{" "}
-                <span className="text-gradient">no invaden</span>:
-                <br />
-                son <span className="text-stone-500">desplazados</span>
-              </motion.h2>
-
-              <div className="space-y-8 text-lg text-stone-400 leading-relaxed"
-              >
-                <motion.p
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                  className="flex items-start gap-4"
-                >
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-500/10 border border-teal-400/20 flex items-center justify-center text-teal-400 text-sm font-bold">1</span>
-                  <span>Existían manglares, lagunas y canales naturales. Llegaron desarrollos turísticos, se rellenaron humedales y se redujeron zonas de anidación.</span>
-                </motion.p>
-
-                <motion.p
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 }}
-                  className="flex items-start gap-4"
-                >
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-500/10 border border-teal-400/20 flex items-center justify-center text-teal-400 text-sm font-bold">2</span>
-                  <span>El cocodrilo perdió alimento y refugio. Empezó a aparecer en marinas, playas, hoteles y zonas urbanas. La gente entró en pánico.</span>
-                </motion.p>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-                className="mt-10 p-8 rounded-3xl bg-gradient-to-br from-teal-500/10 via-stone-900/50 to-emerald-500/10 border border-teal-400/20 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 w-40 h-40 bg-teal-400/10 rounded-full blur-[60px]" />
-                <p className="relative text-teal-300 font-semibold text-xl leading-relaxed"
-                >
-                  "Eso es un desplazamiento ecológico inducido. No es invasión: es consecuencia de nuestras decisiones de desarrollo."
-                </p>
-              </motion.div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* ======== PILARS ======== */}
-      <section id="pilares" className="relative section-block"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(45,212,191,0.08)_0%,_transparent_50%)]" />
-        <div className="max-w-7xl mx-auto relative"
-      >
-          <div className="text-center mb-24"
-          >
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 text-teal-400 text-sm font-semibold tracking-[0.2em] uppercase mb-8"
-            >
-              <Shield className="w-4 h-4" />
-              Estrategia Integral
-            </motion.span>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-[1.1]"
-            >
-              Los{" "}<span className="text-gradient">7 Pilares</span>{" "}
-              <br className="hidden md:block" />
-              de la Solución
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-stone-500 max-w-3xl mx-auto"
-            >
-              Un programa integral que protege vidas humanas, inversión turística, biodiversidad y crea incentivos económicos.
-            </motion.p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {pillars.map((pillar, index) => (
-              <motion.div
-                key={pillar.title}
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.7, delay: index * 0.08 }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-                className="feature-card group"
-                style={{ boxShadow: `0 0 0 1px ${pillar.accent}10` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500" />
-                <div className="relative"
-                >
-                  <div className="flex items-center justify-between mb-6"
-                  >
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                      style={{ backgroundColor: `${pillar.accent}15` }}
-                    >
-                      <pillar.icon className="w-7 h-7" style={{ color: pillar.accent }} />
-                    </div>
-                    <span className="font-mono text-xs text-stone-600"
-                    >0{index + 1}</span>
-                  </div>
-
-                  <h3 className="text-xl font-bold mb-4 group-hover:text-white transition-colors"
-                  >
-                    {pillar.title}
-                  </h3>
-
-                  <p className="text-stone-400 leading-relaxed"
-                  >
-                    {pillar.desc}
-                  </p>
-
-                  <div className="mt-6 pt-6 border-t border-white/5 flex items-center gap-2 text-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <span style={{ color: pillar.accent }} className="font-medium">Ver más</span>
-                    <ArrowRight className="w-4 h-4" style={{ color: pillar.accent }} />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ======== SCENARIOS ======== */}
-      <section className="relative section-block"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-900/[0.03] to-transparent" />
-        <div className="max-w-6xl mx-auto relative"
-      >
-          <div className="text-center mb-24"
-          >
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 text-amber-400 text-sm font-semibold tracking-[0.2em] uppercase mb-8"
-            >
-              <AlertTriangle className="w-4 h-4" />
-              Preparación
-            </motion.span>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-8"
-            >
-              Escenarios{" "}
-              <span className="text-gradient-gold">Difíciles</span>
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-stone-500 max-w-3xl mx-auto"
-            >
-              La mejor estrategia anticipa los obstáculos. Estas son las respuestas para cada escenario complejo.
-            </motion.p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6"
-          >
-            {scenarios.map((scenario, index) => (
-              <motion.div
-                key={scenario.title}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}
-                whileHover={{ scale: 1.02 }}
-                className="card-premium group hover:border-amber-400/30 mb-6"
-              >
-                <div className="flex items-start gap-5 mb-6"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors"
-                  >
-                    <scenario.icon className="w-7 h-7 text-amber-400" />
-                  </div>
-                  <h3 className="text-2xl font-bold group-hover:text-amber-300 transition-colors pt-2"
-                  >
-                    {scenario.title}
-                  </h3>
-                </div>
-
-                <p className="text-stone-400 leading-relaxed text-lg pl-[76px]"
-                >
-                  {scenario.solution}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ======== BENEFITS ======== */}
-      <section className="relative section-block"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,_rgba(45,212,191,0.08)_0%,_transparent_50%)]" />
-        <div className="max-w-6xl mx-auto relative"
-      >
-          <div className="text-center mb-24"
-          >
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 text-teal-400 text-sm font-semibold tracking-[0.2em] uppercase mb-8"
-            >
-              <TrendingUp className="w-4 h-4" />
-              Impacto
-            </motion.span>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-8"
-            >
-              Beneficios{" "}
-              <span className="text-gradient">Económicos</span>{" "}
-              <br className="hidden md:block" />
-              y Ambientales
-            </motion.h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 mb-20"
-          >
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -60 : 60 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: index * 0.1 }}
-                className="card-premium group hover:border-teal-400/30 mb-6"
-              >
-                <div className="flex items-center gap-6"
-                >
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 border border-teal-400/20 flex flex-col items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
-                  >
-                    <span className="text-2xl font-black text-gradient">{benefit.stat}</span>
-                  </div>
-
-                  <div className="flex-1"
-                  >
-                    <div className="flex items-center gap-3 mb-2"
-                    >
-                      <benefit.icon className="w-5 h-5 text-teal-400" />
-                      <h3 className="text-xl font-bold">{benefit.title}</h3>
-                    </div>
-                    <p className="text-stone-400">{benefit.desc}</p>
-                    <span className="inline-block mt-3 text-xs uppercase tracking-wider text-teal-400/60">{benefit.label}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Big Quote */}
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="relative p-16 rounded-[3rem] bg-gradient-to-br from-teal-500/[0.08] via-stone-900/50 to-emerald-500/[0.08] border border-teal-400/20 text-center overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-80 h-80 bg-teal-400/10 rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-0 w-60 h-60 bg-emerald-400/10 rounded-full blur-[80px]" />
-
-            <Droplets className="w-16 h-16 text-teal-400/50 mx-auto mb-8" />
-
-            <blockquote className="relative"
-            >
-              <p className="font-display text-3xl md:text-4xl font-bold leading-relaxed mb-8"
-              >
-                "Proteger cocodrilos = proteger manglares ={" "}
-                <span className="text-gradient">proteger turismo</span>{" "}
-                = proteger playas = proteger valor inmobiliario"
-              </p>
-
-              <p className="text-xl text-stone-400 max-w-3xl mx-auto"
-              >
-                Los humedales previenen inundaciones, filtran agua, estabilizan costas y reducen erosión. Sin ellos, eventualmente también colapsa el turismo.
-              </p>
-            </blockquote>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ======== CTA ======== */}
-      <section id="contacto" className="relative section-block"
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-teal-900/[0.05] via-transparent to-transparent" />
-        <div className="max-w-5xl mx-auto relative"
-      >
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1 }}
-            className="text-center"
-          >
-            <span className="inline-flex items-center gap-2 text-teal-400 text-sm font-semibold tracking-[0.2em] uppercase mb-8"
-            >
-              <CheckCircle className="w-4 h-4" />
-              Acción
+      {/* ======== SECTION 3: INTERACTIVE ZONING MAP SIMULATOR (ZONIFICACIÓN Y DRONES) ======== */}
+      <section className="relative py-40 bg-[#020504] border-y border-emerald-500/10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-4 font-mono">
+              <Map className="w-4 h-4" /> Cartografía y Monitoreo FLIR
             </span>
-
-            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-8"
-            >
-              Presenta la Propuesta{" "}
-              <span className="text-gradient">ante Autoridades</span>
+            <h2 className="font-display text-4xl sm:text-6xl font-black mb-6 text-white leading-tight">
+              Zonificación Ecológica <span className="text-gradient">Inteligente</span>
             </h2>
-
-            <p className="text-xl text-stone-400 mb-16 max-w-2xl mx-auto"
-            >
-              Estructura tu documento con diagnóstico, evidencia cartográfica, plan de mitigación, propuesta legal, presupuesto estimado y cronograma por fases.
+            <p className="text-stone-400 text-base leading-relaxed">
+              Explora las capas cartográficas interactivas. Simulamos la detección en tiempo real de cocodrilos con drones térmicos y los corredores biológicos diseñados para guiar a la fauna de forma segura.
             </p>
+          </div>
 
-            <div className="grid md:grid-cols-2 gap-4 mb-16 text-left"
-            >
-              {docItems.map((item, i) => (
-                <motion.div
-                  key={item}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="flex items-center gap-5 p-5 rounded-2xl card-premium group hover:border-teal-400/30 mb-4"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 border border-teal-400/20 flex items-center justify-center text-teal-400 font-bold flex-shrink-0 group-hover:scale-110 transition-transform"
-                  >
-                    {i + 1}
-                  </div>
-                  <span className="font-medium text-lg group-hover:text-teal-300 transition-colors"
-                  >{item}</span>
-                </motion.div>
-              ))}
+          <ZoningMapSimulator />
+        </div>
+      </section>
+
+      {/* ======== SECTION 4: THE 7 PILLARS (DISEÑO EDITORIAL CON NÚMEROS GIGANTES) ======== */}
+      <section id="pilares" className="relative py-40">
+        <div className="max-w-7xl mx-auto px-6">
+          
+          <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 mb-24">
+            <div className="lg:col-span-5">
+              <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-4 font-mono">
+                <CheckCircle className="w-4 h-4" /> La Solución Técnica
+              </span>
+              <h2 className="font-display text-4xl sm:text-6xl font-black text-white leading-tight">
+                Los <span className="text-gradient">7 Pilares</span> de Coexistencia
+              </h2>
             </div>
+            <div className="lg:col-span-7 flex items-end">
+              <p className="text-stone-400 text-base leading-relaxed max-w-xl">
+                Un plan integrado de ingeniería ambiental, control de fauna y derecho ecológico para garantizar la sustentabilidad a largo plazo en zonas turísticas.
+              </p>
+            </div>
+          </div>
 
-            <motion.a
-              href="mailto:contacto@programa-cocodrilos.org"
-              whileHover={{ scale: 1.05, boxShadow: "0 30px 80px rgba(45,212,191,0.3)" }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-primary text-xl px-12 py-6"
-            >
-              Impulsar el Programa
-              <ArrowRight className="w-6 h-6" />
-            </motion.a>
+          {/* Pillars List - Editorial Timeline style with vertical glowing bar (No grids with borders) */}
+          <div className="relative pl-6 sm:pl-12 border-l-2 border-emerald-500/20 max-w-5xl mx-auto space-y-16 py-4">
+            {pillars.map((p, idx) => {
+              const Icon = p.icon;
+              return (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, delay: idx * 0.05 }}
+                  className="relative flex flex-col sm:flex-row gap-6 sm:gap-12"
+                >
+                  {/* Circle indicator on the timeline */}
+                  <div className="absolute -left-[33px] sm:-left-[57px] top-2 w-5 h-5 rounded-full bg-[#030605] border-2 border-emerald-400 flex items-center justify-center">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  </div>
+
+                  {/* Giant number */}
+                  <div className="flex-shrink-0 select-none">
+                    <span className="font-accent text-6xl sm:text-7xl font-black text-stone-800 leading-none">
+                      0{idx + 1}
+                    </span>
+                  </div>
+
+                  {/* Body details */}
+                  <div>
+                    <div className="flex items-center gap-3.5 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#08120e] border border-emerald-500/20 flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-emerald-400" />
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-stone-100 font-sans">
+                        {p.title}
+                      </h3>
+                    </div>
+                    <p className="text-stone-400 text-sm leading-relaxed max-w-3xl">
+                      {p.desc}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ======== SECTION 5: INTERACTIVE PROTOCOL SIMULATOR (ESCENARIOS DE CRISIS) ======== */}
+      <section className="relative py-40 bg-[#020504] border-y border-emerald-500/10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-4 font-mono">
+              <AlertTriangle className="w-4 h-4" /> Simulador de Contingencia
+            </span>
+            <h2 className="font-display text-4xl sm:text-6xl font-black mb-6 text-white leading-tight">
+              Resolución de Escenarios <span className="text-gradient-gold">Críticos</span>
+            </h2>
+            <p className="text-stone-400 text-base leading-relaxed">
+              ¿Cómo actúa el programa ante emergencias, infracciones de turistas o desmonte de manglares por constructoras? Interactúa con los protocolos técnicos oficiales de respuesta.
+            </p>
+          </div>
+
+          <ProtocolSimulator />
+        </div>
+      </section>
+
+      {/* ======== SECTION 6: INTERACTIVE ROI CALCULATOR (BENEFICIOS ECONÓMICOS) ======== */}
+      <section className="relative py-40">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-4 font-mono">
+              <TrendingUp className="w-4 h-4" /> Viabilidad e Inversión
+            </span>
+            <h2 className="font-display text-4xl sm:text-6xl font-black mb-6 text-white leading-tight">
+              El Valor de la Coexistencia <span className="text-gradient">Ecológica</span>
+            </h2>
+            <p className="text-stone-400 text-base leading-relaxed">
+              La sustentabilidad ambiental incrementa directamente el valor patrimonial inmobiliario. Calcula el retorno verde estimado y el ahorro en sanciones por desmonte ilegal de humedales.
+            </p>
+          </div>
+
+          <ROICalculator />
+
+          {/* Big Editorial Quote Block (Solid Dark Green Gradient, NO glassmorphism) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }} 
+            transition={{ duration: 0.8 }} 
+            className="mt-24 p-12 sm:p-20 rounded-3xl bg-gradient-to-br from-[#04120a] via-[#020504] to-[#04120a] border border-emerald-500/20 text-center"
+          >
+            <Droplets className="w-12 h-12 text-emerald-400/60 mx-auto mb-8 animate-pulse" />
+            <blockquote className="font-display text-2xl sm:text-4xl font-bold leading-relaxed mb-8 text-white max-w-4xl mx-auto">
+              &ldquo;Proteger el cocodrilo es proteger el manglar. Proteger el manglar es blindar la playa contra la erosión y asegurar la viabilidad del destino turístico a largo plazo.&rdquo;
+            </blockquote>
+            <div className="w-16 h-0.5 bg-emerald-500/40 mx-auto mb-6" />
+            <p className="text-sm text-stone-500 max-w-2xl mx-auto leading-relaxed">
+              Los humedales amortiguan tormentas tropicales, filtran sedimentos del agua y regulan el clima costero. Su conservación previene pérdidas millonarias en infraestructura hotelera por inundaciones.
+            </p>
           </motion.div>
         </div>
       </section>
 
-
-      {/* ======== GALLERÍA REAL ======== */}
-      <section id="galeria" className="relative section-padding py-16 lg:py-24"
-      >
-        <div className="max-w-7xl mx-auto relative"
-        >
-          <div className="text-center mb-16"
-          >
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 text-teal-400 text-sm font-semibold tracking-[0.2em] uppercase mb-6"
-            >
-              <Eye className="w-4 h-4" />
-              Documentación
-            </motion.span>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
-            >
-              Fauna en su{" "}
-              <span className="text-gradient">Hábitat Natural</span>
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-xl text-stone-500 max-w-2xl mx-auto"
-            >
-              Imágenes reales del ecosistema que estamos protegiendo.
-            </motion.p>
+      {/* ======== SECTION 7: FAUNA GALLERY & SLIDER ======== */}
+      <section id="galeria" className="relative py-32 bg-[#020504] border-y border-emerald-500/10">
+        <div className="max-w-7xl mx-auto px-6">
+          
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-4 font-mono">
+              <Eye className="w-4 h-4" /> Registro Visual
+            </span>
+            <h2 className="font-display text-4xl sm:text-6xl font-black text-white leading-tight">
+              Fauna en su <span className="text-gradient">Hábitat</span> Protegido
+            </h2>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="h-[500px] md:h-[600px]"
-          >
+          {/* Interactive Cinematic Slider */}
+          <div className="h-[460px] md:h-[600px] mb-12">
             <ImageCarousel />
-          </motion.div>
+          </div>
 
-          <div className="grid grid-cols-4 gap-4 mt-8"
-          >
-            {['/images/croc3.jpg', '/images/croc4.jpg', '/images/croc5.jpg', '/images/croc6.jpg'].map((src, i) => (
-              <motion.div
-                key={src}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="relative aspect-square rounded-2xl overflow-hidden group"
+          {/* 4 Small Grid Images showing documentation (Solid hover overlay effect) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { src: '/images/croc3.jpg', desc: 'Rastreo FLIR Térmico' },
+              { src: '/images/croc4.jpg', desc: 'Nidos en Manglar Rojo' },
+              { src: '/images/croc5.jpg', desc: 'Mapeo Topográfico GIS' },
+              { src: '/images/croc6.jpg', desc: 'Monitoreo de Juveniles' }
+            ].map((img, i) => (
+              <motion.div 
+                key={img.src} 
+                initial={{ opacity: 0, scale: 0.95 }} 
+                whileInView={{ opacity: 1, scale: 1 }} 
+                viewport={{ once: true }} 
+                transition={{ duration: 0.5, delay: i * 0.08 }} 
+                className="relative aspect-[4/3] sm:aspect-square rounded-2xl overflow-hidden group border border-emerald-500/10 hover:border-emerald-500/40 transition-colors"
               >
-                <img src={src} alt={`Documentación ${i + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <img 
+                  src={img.src} 
+                  alt={img.desc} 
+                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700" 
+                />
+                {/* Hover cover (Solid dark gradient overlay) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020504] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 pointer-events-none">
+                  <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-widest bg-[#020504] border border-emerald-500/25 px-2.5 py-1 rounded">
+                    {img.desc}
+                  </span>
+                </div>
               </motion.div>
             ))}
           </div>
+
         </div>
       </section>
 
-      {/* ======== FOOTER ======== */}
-      <footer className="relative py-20 px-6 border-t border-teal-400/20 bg-[#040809]"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-teal-900/[0.03] to-transparent" />
-        <div className="max-w-5xl mx-auto text-center relative"
-      >
-          <div className="flex items-center justify-center gap-4 mb-8"
+      {/* ======== SECTION 8: FINAL CTA BLOCK (SOLICITUD DE AUDITORÍA Y CONTACTO) ======== */}
+      <section id="contacto" className="relative py-40 overflow-hidden">
+        {/* Ambient background gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/20 via-[#030605] to-emerald-950/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(16,185,129,0.1)_0%,_transparent_60%)] pointer-events-none" />
+        
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 border border-teal-400/20 flex items-center justify-center"
+            <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-mono">
+              <Award className="w-4 h-4" /> Certificación Ambiental
+            </span>
+            <h2 className="font-display text-4xl sm:text-6xl font-black mb-8 text-white leading-tight">
+              Adhiere tu Desarrollo al <br />
+              <span className="text-gradient">Programa Cocodrilos</span>
+            </h2>
+            <p className="text-lg md:text-xl text-stone-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Solicita un análisis cartográfico preliminar y auditoría de viabilidad ecológica para certificar tus lagos, campos de golf o canales náuticos.
+            </p>
+            <a 
+              href="mailto:contacto@programa-cocodrilos.org" 
+              className="btn-primary text-lg"
             >
-              <Leaf className="w-6 h-6 text-teal-400" />
+              Iniciar Auditoría Técnica <ArrowRight className="w-5 h-5" />
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ======== FOOTER SECTION (INFORMACIÓN INSTITUCIONAL COMPLETA) ======== */}
+      <footer className="relative pt-24 pb-12 px-6 bg-[#010403] border-t border-emerald-500/10 text-stone-400">
+        <div className="max-w-7xl mx-auto">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            {/* Logo and desc */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-400/20 flex items-center justify-center">
+                  <Leaf className="w-5 h-5 text-emerald-400" />
+                </div>
+                <span className="font-display text-xl font-bold text-white tracking-wide">
+                  Programa Cocodrilos
+                </span>
+              </div>
+              <p className="text-xs text-stone-500 leading-relaxed max-w-sm">
+                Iniciativa científica, legal y tecnológica para la coexistencia armónica de la fauna silvestre en destinos turísticos y residenciales de humedales.
+              </p>
             </div>
-            <span className="font-display text-3xl font-bold">Programa Cocodrilos</span>
+
+            {/* Institutions */}
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-widest text-emerald-400 font-bold mb-4">
+                Soporte Institucional
+              </h4>
+              <ul className="space-y-2 text-xs text-stone-500">
+                <li className="hover:text-stone-300 transition-colors">SEMARNAT (Registro Ambiental)</li>
+                <li className="hover:text-stone-300 transition-colors">PROFEPA (Vigilancia e Inspección)</li>
+                <li className="hover:text-stone-300 transition-colors">CONANP (Áreas Protegidas)</li>
+                <li className="hover:text-stone-300 transition-colors">Sitio Ramsar Internacional</li>
+              </ul>
+            </div>
+
+            {/* Links / Map */}
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-widest text-emerald-400 font-bold mb-4">
+                Ubicación de Campo
+              </h4>
+              <p className="text-xs text-stone-500 leading-relaxed">
+                Estación Biológica Núcleo I<br />
+                Reserva Ecológica Laguna de Cocodrilos<br />
+                Quintana Roo, México
+              </p>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-widest text-emerald-400 font-bold mb-4">
+                Contacto Directo
+              </h4>
+              <p className="text-xs text-stone-300 font-mono">
+                contacto@programa-cocodrilos.org
+              </p>
+              <p className="text-[10px] text-stone-600 leading-relaxed mt-4">
+                Página técnica certificada para presentación gubernamental y comisiones ejidales/hoteleras.
+              </p>
+            </div>
           </div>
 
-          <p className="text-stone-500 text-lg mb-2"
-          >
-            Programa Integral de Recuperación y Coexistencia de Humedales y Cocodrilos
-          </p>
-
-          <p className="text-stone-600 mb-10"
-          >
-            Modelo de coexistencia ecológica, legal y económica sostenible.
-          </p>
-
-          <div className="flex items-center justify-center gap-8 text-sm text-stone-600"
-          >
-            <span>SEMARNAT</span>
-            <span className="w-1 h-1 rounded-full bg-stone-700" />
-            <span>PROFEPA</span>
-            <span className="w-1 h-1 rounded-full bg-stone-700" />
-            <span>CONANP</span>
+          {/* Bottom disclaimer */}
+          <div className="pt-8 border-t border-emerald-500/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-stone-600">
+            <span>© 2026 Programa Cocodrilos. Todos los derechos reservados.</span>
+            <span>Diseño de Infraestructura y Coexistencia Sostenible en Humedales y Costas.</span>
           </div>
 
-          <div className="mt-16 pt-8 border-t border-white/[0.04] text-sm text-stone-700"
-          >
-            © 2025 Programa Cocodrilos. Todos los derechos reservados.
-          </div>
         </div>
       </footer>
+
     </main>
   );
 }

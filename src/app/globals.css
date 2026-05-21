@@ -1,178 +1,132 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cinzel:wght@400;500;600;700&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+@import "tailwindcss";
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: #050a0b;
-    color: #f0f2f5;
-    overflow-x: hidden;
-    line-height: 1.7;
-  }
-  ::selection {
-    background: #0d9488;
-    color: #ffffff;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-  }
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #030605; /* Deep jungle forest base */
+  color: #e2e8f0;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-@layer components {
-  .font-display {
-    font-family: 'Playfair Display', serif;
-  }
-
-  /* =========== TEXTOS Y GRADIENTES =========== */
-  .text-gradient {
-    background: linear-gradient(135deg, #2dd4bf 0%, #34d399 50%, #0d9488 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .text-gradient-gold {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* =========== BOTONES =========== */
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #0d9488 100%);
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 1.125rem;
-    border-radius: 1rem;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(13, 148, 136, 0.3);
-  }
-  .btn-primary:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 40px rgba(13, 148, 136, 0.4), 0 0 0 2px rgba(255,255,255,0.15) inset;
-  }
-  .btn-primary::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-    transform: translateX(-100%) rotate(25deg);
-    transition: transform 0.6s;
-  }
-  .btn-primary:hover::after {
-    transform: translateX(100%) rotate(25deg);
-  }
-
-  .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 2.5rem;
-    background: rgba(255, 255, 255, 0.08);
-    color: #f0f2f5;
-    font-weight: 600;
-    font-size: 1.125rem;
-    border-radius: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .btn-secondary:hover {
-    background: rgba(13, 148, 136, 0.1);
-    border-color: #2dd4bf;
-    color: #2dd4bf;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  /* =========== TARJETAS PREMIUM =========== */
-  .card-premium {
-    background: linear-gradient(145deg, #0c191d 0%, #081012 100%);
-    border: 1px solid rgba(45, 212, 191, 0.15);
-    border-radius: 1.5rem;
-    padding: 2.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  }
-  .card-premium::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.6), transparent);
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-  .card-premium:hover::before {
-    opacity: 1;
-  }
-  .card-premium:hover {
-    transform: translateY(-12px);
-    border-color: rgba(45, 212, 191, 0.3);
-    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(45, 212, 191, 0.1), inset 0 1px 0 rgba(255,255,255,0.05);
-  }
-
-  /* =========== SEPARADORES DE SECCIONES =========== */
-  .section-block {
-    padding: 8rem 1.5rem;
-    margin-top: 2rem;
-    position: relative;
-  }
-  .section-block::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(45, 212, 191, 0.3) 50%, transparent 100%);
-  }
-
-  /* =========== MÁRGENES GRANDES =========== */
-  .gutter-lg {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  /* =========== FORMAS DECORATIVAS =========== */
-  .blob-glow {
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(45, 212, 191, 0.15), transparent 70%);
-    border-radius: 50%;
-    filter: blur(60px);
-    pointer-events: none;
-  }
-
-  /* =========== GRID BG =========== */
-  .grid-bg {
-    background-image: 
-      linear-gradient(rgba(45, 212, 191, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(45, 212, 191, 0.02) 1px, transparent 1px);
-    background-size: 100px 100px;
-  }
+.font-display {
+  font-family: 'Playfair Display', serif;
 }
+.font-accent {
+  font-family: 'Cinzel', serif;
+}
+
+/* PREMIUM GRADIENTS */
+.text-gradient {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* BOTONES MEJORADOS CON SOMBRA Y BRILLO DIRECTRIZ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.125rem 2.75rem;
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #059669 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 30px rgba(16, 185, 129, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5), 0 0 0 2px rgba(255,255,255,0.15) inset;
+  border-color: rgba(52, 211, 153, 0.6);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+  transform: translateX(-100%) rotate(25deg);
+  transition: transform 0.8s ease-in-out;
+}
+
+.btn-primary:hover::after {
+  transform: translateX(100%) rotate(25deg);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.125rem 2.75rem;
+  background: #091712; /* Fondo sólido oscuro, no translúcido */
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.btn-secondary:hover {
+  background: #112d23;
+  border-color: #34d399;
+  color: #34d399;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(4, 13, 10, 0.6);
+}
+
+/* SOLID CARD DESIGNS - NO GLASSMORPHISM */
+.panel-solid {
+  background-color: #08120e;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.panel-solid-highlight {
+  background-color: #0c1b15;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+/* Grid BG */
+.grid-bg {
+  background-image: 
+    linear-gradient(rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 185, 129, 0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+

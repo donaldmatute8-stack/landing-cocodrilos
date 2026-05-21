@@ -18,7 +18,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-sans antialiased bg-[#0a0a0a] text-[#e8e6e3]">
+      <body className="font-sans antialiased text-[#e2e8f0]">
         {children}
       </body>
     </html>
