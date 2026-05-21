@@ -168,17 +168,17 @@ export default function Home() {
 
               <div className="space-y-8 text-stone-400 text-base leading-relaxed max-w-xl">
                 <p className="pl-6 border-l-2 border-emerald-500/30">
-                  Históricamente, la costa poseía un sistema complejo de manglares y canales de marea. El desarrollo inmobiliario acelerado rellenó humedales, interrumpiendo el flujo hídrico y bloqueando las rutas tradicionales de fauna.
+                  El desarrollo turístico rellenó humedales y canales naturales. Los cocodrilos perdieron alimento y refugio, y ahora aparecen en playas, marinas y hoteles.
                 </p>
                 <p className="pl-6 border-l-2 border-amber-500/30">
-                  Al perder alimento y refugio natural, el cocodrilo americano (Crocodylus acutus) se ve obligado a ingresar en marinas artificiales, lagos de campos de golf y playas, originando encuentros imprevistos con turistas.
+                  Esto no es agresión: es desplazamiento ecológico. La solución no es eliminar a la fauna, es rediseñar el desarrollo con base científica.
                 </p>
               </div>
 
               {/* Callout quote - Solid background (NO glassmorphism) */}
               <div className="mt-12 p-8 rounded-2xl bg-[#09140f] border border-emerald-500/20 max-w-xl">
                 <p className="text-emerald-300 font-semibold text-lg leading-relaxed italic">
-                  &ldquo;No es un comportamiento agresivo, es un desplazamiento ecológico inducido. La solución requiere rediseñar el desarrollo turístico con base en la ciencia.&rdquo;
+                  &ldquo;No es invasión: es consecuencia del desarrollo sin planificación ambiental.&rdquo;
                 </p>
                 <span className="block mt-4 text-xs font-mono uppercase tracking-wider text-stone-500">
                   — Comisión Científica de Manejo de Humedales
@@ -238,7 +238,7 @@ export default function Home() {
               Zonificación Ecológica <span className="text-gradient">Inteligente</span>
             </h2>
             <p className="text-stone-400 text-base leading-relaxed">
-              Explora las capas cartográficas interactivas. Simulamos la detección en tiempo real de cocodrilos con drones térmicos y los corredores biológicos diseñados para guiar a la fauna de forma segura.
+              Explora las capas cartográficas. Detecta cocodrilos con drones térmicos y diseña corredores biológicos para guiar la fauna de forma segura.
             </p>
           </div>
 
@@ -324,7 +324,7 @@ export default function Home() {
               Resolución de Escenarios <span className="text-gradient-gold">Críticos</span>
             </h2>
             <p className="text-stone-400 text-base leading-relaxed">
-              ¿Cómo actúa el programa ante emergencias, infracciones de turistas o desmonte de manglares por constructoras? Interactúa con los protocolos técnicos oficiales de respuesta.
+              Protocolos de respuesta ante emergencias: avistamientos, infracciones y desmontes ilegales.
             </p>
           </div>
 
