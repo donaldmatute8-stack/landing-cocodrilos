@@ -258,13 +258,26 @@ export default function Home() {
         style={{ scaleX: scrollYProgress }}
       />
 
-      {/* ======== HERO - SPLIT SCREEN CON FOTOS REALES ======== */}
+      {/* ======== HERO CON FOTO REAL ======== */}
       <motion.section
         style={{ opacity: heroOpacity, y: heroY }}
-        className="relative min-h-screen flex items-center overflow-hidden"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
       >
-        {/* Left: Text Content */}
-        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-16 py-20">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src="/images/croc1.jpg" 
+            alt="Cocodrilo en hábitat"
+            className="w-full h-full object-cover scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#050a0b]/95 via-[#050a0b]/70 to-[#050a0b]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(13,148,136,0.15)_0%,_transparent_60%)]" />
+        </div>
+
+        <Particles />
+
+        {/* Content */}
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center py-20">
           <Particles />
           
           {/* Badge */}
@@ -339,49 +352,7 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Right: Photo Grid */}
-        <div className="hidden lg:block absolute right-0 top-0 w-1/2 h-full">
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#0a0a0a]/50 to-[#0a0a0a] z-10" />
-          <div className="grid grid-cols-2 gap-3 p-8 h-full">
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, delay: 0.3 }}
-              className="relative rounded-3xl overflow-hidden row-span-2"
-            >
-              <img src="/images/croc1.jpg" alt="Cocodrilo principal" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <div className="absolute bottom-6 left-6">
-                <p className="text-sm text-teal-300 font-medium">Vida Silvestre</p>
-                <p className="text-2xl font-bold">Hábitat Natural</p>
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, delay: 0.5 }}
-              className="relative rounded-3xl overflow-hidden"
-            >
-              <img src="/images/croc3.jpg" alt="Ecosistema" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <div className="absolute bottom-4 left-4">
-                <p className="text-sm text-emerald-300 font-medium">Ecosistema</p>
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, delay: 0.7 }}
-              className="relative rounded-3xl overflow-hidden"
-            >
-              <img src="/images/croc7.jpg" alt="Conservación" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <div className="absolute bottom-4 left-4">
-                <p className="text-sm text-cyan-300 font-medium">Conservación</p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+
 
         {/* Content */}
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
@@ -495,7 +466,7 @@ export default function Home() {
       </motion.section>
 
       {/* ======== PROBLEM SECTION ======== */}
-      <section className="relative section-padding overflow-hidden">
+      <section className="relative section-block">
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-teal-500/5 rounded-full blur-[150px]" />
 
@@ -528,7 +499,7 @@ export default function Home() {
                   {/* Stats Overlay */}
                   <div className="absolute bottom-8 left-8 right-8"
                   >
-                    <div className="card-solid"
+                    <div className="card-premium"
                     >
                       <div className="flex items-center justify-between"
                       >
@@ -642,7 +613,7 @@ export default function Home() {
       </section>
 
       {/* ======== PILARS ======== */}
-      <section id="pilares" className="relative section-padding"
+      <section id="pilares" className="relative section-block"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(45,212,191,0.08)_0%,_transparent_50%)]" />
         <div className="max-w-7xl mx-auto relative"
@@ -733,7 +704,7 @@ export default function Home() {
       </section>
 
       {/* ======== SCENARIOS ======== */}
-      <section className="relative section-padding overflow-hidden"
+      <section className="relative section-block"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-900/[0.03] to-transparent" />
         <div className="max-w-6xl mx-auto relative"
@@ -782,7 +753,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: index * 0.15 }}
                 whileHover={{ scale: 1.02 }}
-                className="card-solid group hover:border-amber-400/30"
+                className="card-premium group hover:border-amber-400/30 mb-6"
               >
                 <div className="flex items-start gap-5 mb-6"
                 >
@@ -807,7 +778,7 @@ export default function Home() {
       </section>
 
       {/* ======== BENEFITS ======== */}
-      <section className="relative section-padding"
+      <section className="relative section-block"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,_rgba(45,212,191,0.08)_0%,_transparent_50%)]" />
         <div className="max-w-6xl mx-auto relative"
@@ -847,7 +818,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: index * 0.1 }}
-                className="card-solid group hover:border-teal-400/30"
+                className="card-premium group hover:border-teal-400/30 mb-6"
               >
                 <div className="flex items-center gap-6"
                 >
@@ -903,7 +874,7 @@ export default function Home() {
       </section>
 
       {/* ======== CTA ======== */}
-      <section id="contacto" className="relative section-padding"
+      <section id="contacto" className="relative section-block"
       >
         <div className="absolute inset-0 bg-gradient-to-t from-teal-900/[0.05] via-transparent to-transparent" />
         <div className="max-w-5xl mx-auto relative"
@@ -941,7 +912,7 @@ export default function Home() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="flex items-center gap-5 p-5 rounded-2xl card-solid group hover:border-teal-400/30"
+                  className="flex items-center gap-5 p-5 rounded-2xl card-premium group hover:border-teal-400/30 mb-4"
                 >
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 border border-teal-400/20 flex items-center justify-center text-teal-400 font-bold flex-shrink-0 group-hover:scale-110 transition-transform"
                   >
@@ -1035,7 +1006,7 @@ export default function Home() {
       </section>
 
       {/* ======== FOOTER ======== */}
-      <footer className="relative py-20 px-6 border-t border-white/[0.06]"
+      <footer className="relative py-20 px-6 border-t border-teal-400/20 bg-[#040809]"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-teal-900/[0.03] to-transparent" />
         <div className="max-w-5xl mx-auto text-center relative"
