@@ -22,6 +22,7 @@ import {
   Circle,
   Droplets,
 } from "lucide-react";
+import { ImageCarousel } from "@/components/ImageCarousel";
 
 // ========== PARTICLE SYSTEM ==========
 function Particles() {
@@ -257,37 +258,129 @@ export default function Home() {
         style={{ scaleX: scrollYProgress }}
       />
 
-      {/* ======== HERO ======== */}
+      {/* ======== HERO - SPLIT SCREEN CON FOTOS REALES ======== */}
       <motion.section
         style={{ opacity: heroOpacity, y: heroY }}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-screen flex items-center overflow-hidden"
       >
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110"
-            style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1535068484670-2a9c7c31476e?q=80&w=2000&auto=format&fit=crop')",
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/90 via-[#0a0a0a]/60 to-[#0a0a0a]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(45,212,191,0.2)_0%,_transparent_60%)]" />
-          <div className="absolute inset-0 noise-overlay" />
+        {/* Left: Text Content */}
+        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-16 py-20">
+          <Particles />
+          
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-md text-teal-300 text-sm font-medium border border-teal-400/20 shadow-lg shadow-teal-500/10 mb-8"
+            >
+              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+              <span className="uppercase tracking-widest text-xs">Programa Integral Ambiental</span>
+            </span>
+          </motion.div>
+
+          {/* Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="mt-6 mb-8 leading-[0.95]"
+          >
+            <span className="block font-display text-5xl md:text-6xl lg:text-7xl font-black tracking-tight"
+            >
+              Recuperación
+            </span>
+            <span className="block font-display text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-gradient mt-2"
+            >
+              & Coexistencia
+            </span>
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            <p className="text-xl md:text-2xl text-stone-400 leading-relaxed max-w-xl"
+            >
+              Transformando conflictos entre desarrollo humano y fauna silvestre en modelos de{" "}
+              <span className="text-teal-400 font-semibold">coexistencia ecológica</span>, legal y económicamente sostenibles.
+            </p>
+          </motion.div>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="mt-10 flex flex-col sm:flex-row gap-4"
+          >
+            <motion.a
+              href="#pilares"
+              whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(45,212,191,0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-teal-400 to-emerald-400 text-[#0a0a0a] font-bold text-lg rounded-2xl transition-all"
+            >
+              Explorar los 7 Pilares
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </motion.a>
+
+            <motion.a
+              href="#contacto"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10 text-white font-semibold text-lg rounded-2xl hover:bg-white/10 hover:border-teal-400/30 transition-all"
+            >
+              Presentar Propuesta
+              <ArrowRight className="w-5 h-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+            </motion.a>
+          </motion.div>
         </div>
 
-        <Particles />
-
-        {/* Floating Blobs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <FloatingElement delay={0} duration={8}>
-            <div className="absolute top-[15%] left-[5%] w-72 h-72 rounded-full bg-teal-500/15 blur-[100px]" />
-          </FloatingElement>
-          <FloatingElement delay={3} duration={10}>
-            <div className="absolute top-[25%] right-[10%] w-96 h-96 rounded-full bg-emerald-500/10 blur-[120px]" />
-          </FloatingElement>
-          <FloatingElement delay={6} duration={7}>
-            <div className="absolute bottom-[20%] left-[20%] w-64 h-64 rounded-full bg-cyan-500/12 blur-[80px]" />
-          </FloatingElement>
+        {/* Right: Photo Grid */}
+        <div className="hidden lg:block absolute right-0 top-0 w-1/2 h-full">
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#0a0a0a]/50 to-[#0a0a0a] z-10" />
+          <div className="grid grid-cols-2 gap-3 p-8 h-full">
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.2, delay: 0.3 }}
+              className="relative rounded-3xl overflow-hidden row-span-2"
+            >
+              <img src="/images/croc1.jpg" alt="Cocodrilo principal" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-6 left-6">
+                <p className="text-sm text-teal-300 font-medium">Vida Silvestre</p>
+                <p className="text-2xl font-bold">Hábitat Natural</p>
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.2, delay: 0.5 }}
+              className="relative rounded-3xl overflow-hidden"
+            >
+              <img src="/images/croc3.jpg" alt="Ecosistema" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-4 left-4">
+                <p className="text-sm text-emerald-300 font-medium">Ecosistema</p>
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.2, delay: 0.7 }}
+              className="relative rounded-3xl overflow-hidden"
+            >
+              <img src="/images/croc7.jpg" alt="Conservación" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-4 left-4">
+                <p className="text-sm text-cyan-300 font-medium">Conservación</p>
+              </div>
+            </motion.div>
+          </div>
         </div>
 
         {/* Content */}
@@ -426,7 +519,7 @@ export default function Home() {
                 <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10"
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?q=80&w=1200&auto=format&fit=crop"
+                    src="/images/croc2.jpg"
                     alt="Manglar"
                     className="w-full h-[600px] object-cover"
                   />
@@ -870,6 +963,74 @@ export default function Home() {
               <ArrowRight className="w-6 h-6" />
             </motion.a>
           </motion.div>
+        </div>
+      </section>
+
+
+      {/* ======== GALLERÍA REAL ======== */}
+      <section id="galeria" className="relative py-24 px-6"
+      >
+        <div className="max-w-7xl mx-auto relative"
+        >
+          <div className="text-center mb-16"
+          >
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 text-teal-400 text-sm font-semibold tracking-[0.2em] uppercase mb-6"
+            >
+              <Eye className="w-4 h-4" />
+              Documentación
+            </motion.span>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+            >
+              Fauna en su{" "}
+              <span className="text-gradient">Hábitat Natural</span>
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-xl text-stone-500 max-w-2xl mx-auto"
+            >
+              Imágenes reales del ecosistema que estamos protegiendo.
+            </motion.p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="h-[500px] md:h-[600px]"
+          >
+            <ImageCarousel />
+          </motion.div>
+
+          <div className="grid grid-cols-4 gap-4 mt-8"
+          >
+            {['/images/croc3.jpg', '/images/croc4.jpg', '/images/croc5.jpg', '/images/croc6.jpg'].map((src, i) => (
+              <motion.div
+                key={src}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="relative aspect-square rounded-2xl overflow-hidden group"
+              >
+                <img src={src} alt={`Documentación ${i + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
