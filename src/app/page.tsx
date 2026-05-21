@@ -249,7 +249,7 @@ export default function Home() {
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
 
   return (
-    <main ref={containerRef} className="min-h-screen bg-[#0a0a0a] text-[#e8e6e3] overflow-x-hidden relative">
+    <main ref={containerRef} className="min-h-screen bg-[#080c0e] text-[#e8e6e3] overflow-x-hidden relative">
       <MouseGlow />
 
       {/* Scroll Progress */}
@@ -449,7 +449,7 @@ export default function Home() {
               href="#pilares"
               whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(45,212,191,0.3)" }}
               whileTap={{ scale: 0.95 }}
-              className="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-teal-400 to-emerald-400 text-[#0a0a0a] font-bold text-lg rounded-2xl transition-all"
+              className="btn-primary group"
             >
               Explorar los 7 Pilares
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -459,7 +459,7 @@ export default function Home() {
               href="#contacto"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="group inline-flex items-center gap-3 px-10 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white font-semibold text-lg rounded-2xl hover:bg-white/10 hover:border-teal-400/30 transition-all"
+              className="btn-secondary group"
             >
               Presentar Propuesta
               <ArrowRight className="w-5 h-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
@@ -495,7 +495,7 @@ export default function Home() {
       </motion.section>
 
       {/* ======== PROBLEM SECTION ======== */}
-      <section className="relative py-32 px-6 overflow-hidden">
+      <section className="relative section-padding overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-teal-500/5 rounded-full blur-[150px]" />
 
@@ -528,7 +528,7 @@ export default function Home() {
                   {/* Stats Overlay */}
                   <div className="absolute bottom-8 left-8 right-8"
                   >
-                    <div className="glass-card glow-teal rounded-2xl p-6"
+                    <div className="card-solid"
                     >
                       <div className="flex items-center justify-between"
                       >
@@ -642,7 +642,7 @@ export default function Home() {
       </section>
 
       {/* ======== PILARS ======== */}
-      <section id="pilares" className="relative py-32 px-6"
+      <section id="pilares" className="relative section-padding"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(45,212,191,0.08)_0%,_transparent_50%)]" />
         <div className="max-w-7xl mx-auto relative"
@@ -692,7 +692,7 @@ export default function Home() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.7, delay: index * 0.08 }}
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
-                className={`group relative p-8 rounded-3xl bg-gradient-to-br ${pillar.bg} ${pillar.border} border backdrop-blur-sm transition-all duration-500 hover:shadow-2xl shine-effect`}
+                className="feature-card group"
                 style={{ boxShadow: `0 0 0 1px ${pillar.accent}10` }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500" />
@@ -733,7 +733,7 @@ export default function Home() {
       </section>
 
       {/* ======== SCENARIOS ======== */}
-      <section className="relative py-32 px-6 overflow-hidden"
+      <section className="relative section-padding overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-900/[0.03] to-transparent" />
         <div className="max-w-6xl mx-auto relative"
@@ -782,7 +782,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: index * 0.15 }}
                 whileHover={{ scale: 1.02 }}
-                className="group p-8 rounded-3xl bg-gradient-to-br from-stone-900/80 to-stone-900/40 border border-white/[0.06] backdrop-blur-sm hover:border-amber-400/30 transition-all duration-500"
+                className="card-solid group hover:border-amber-400/30"
               >
                 <div className="flex items-start gap-5 mb-6"
                 >
@@ -807,7 +807,7 @@ export default function Home() {
       </section>
 
       {/* ======== BENEFITS ======== */}
-      <section className="relative py-32 px-6"
+      <section className="relative section-padding"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,_rgba(45,212,191,0.08)_0%,_transparent_50%)]" />
         <div className="max-w-6xl mx-auto relative"
@@ -847,7 +847,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: index * 0.1 }}
-                className="group p-8 rounded-3xl glass-card border border-white/[0.06] hover:border-teal-400/30 transition-all duration-500"
+                className="card-solid group hover:border-teal-400/30"
               >
                 <div className="flex items-center gap-6"
                 >
@@ -903,7 +903,7 @@ export default function Home() {
       </section>
 
       {/* ======== CTA ======== */}
-      <section id="contacto" className="relative py-32 px-6"
+      <section id="contacto" className="relative section-padding"
       >
         <div className="absolute inset-0 bg-gradient-to-t from-teal-900/[0.05] via-transparent to-transparent" />
         <div className="max-w-5xl mx-auto relative"
@@ -941,7 +941,7 @@ export default function Home() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="flex items-center gap-5 p-5 rounded-2xl glass-card border border-white/[0.06] hover:border-teal-400/30 hover:bg-white/[0.03] transition-all duration-300 group"
+                  className="flex items-center gap-5 p-5 rounded-2xl card-solid group hover:border-teal-400/30"
                 >
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 border border-teal-400/20 flex items-center justify-center text-teal-400 font-bold flex-shrink-0 group-hover:scale-110 transition-transform"
                   >
@@ -957,7 +957,7 @@ export default function Home() {
               href="mailto:contacto@programa-cocodrilos.org"
               whileHover={{ scale: 1.05, boxShadow: "0 30px 80px rgba(45,212,191,0.3)" }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-teal-400 to-emerald-400 text-[#0a0a0a] font-black text-xl rounded-2xl"
+              className="btn-primary text-xl px-12 py-6"
             >
               Impulsar el Programa
               <ArrowRight className="w-6 h-6" />
@@ -968,7 +968,7 @@ export default function Home() {
 
 
       {/* ======== GALLERÍA REAL ======== */}
-      <section id="galeria" className="relative py-24 px-6"
+      <section id="galeria" className="relative section-padding py-16 lg:py-24"
       >
         <div className="max-w-7xl mx-auto relative"
         >
