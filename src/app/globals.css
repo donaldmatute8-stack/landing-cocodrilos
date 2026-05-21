@@ -6,4 +6,28 @@
   html {
     scroll-behavior: smooth;
   }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #0a0f0e;
+    color: #e8ede9;
+  }
+}
+
+@layer components {
+  .text-gradient {
+    background: linear-gradient(135deg, #2dd4bf 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .glass-card {
+    background: rgba(15, 23, 22, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(45, 212, 191, 0.1);
+  }
+  
+  .glow-border {
+    box-shadow: 0 0 20px rgba(45, 212, 191, 0.1), inset 0 0 20px rgba(45, 212, 191, 0.05);
+  }
 }

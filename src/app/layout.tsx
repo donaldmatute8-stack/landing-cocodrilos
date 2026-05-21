@@ -13,7 +13,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className="antialiased bg-stone-950 text-stone-100">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+      </head>
+      <body className="font-sans antialiased bg-[#0a0f0e] text-[#e8ede9]">
         {children}
       </body>
     </html>
